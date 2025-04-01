@@ -1,15 +1,26 @@
 import asyncio
 import pytest
-from unittest.mock import patch
-from kubernetes.client import V1Namespace, V1ObjectMeta
-from kube import get_namespaces
+from kubernetes import config
+from generate import create_lister
+
+config.load_kube_config("~/.kube/config")
 
 @pytest.mark.asyncio
 async def test_get_namespaces():
     """Test the get_namespaces function."""
+
+    method = create_lister( "list_namespace")
+    # Ensure the function is callable
+    assert callable(method), "The method should be callable"
+    # Call the method to ensure it works correctly
     # Call the function
-    namespaces = await get_namespaces()
+    namespaces = await method()
 
     # Check that the function returns a list
     assert isinstance(namespaces, list)
     assert len(namespaces) > 0
+
+def test_add_tools():
+    """Test adding MCP tools by calling add_tools() and then
+    checking that those actually exist."""
+    

@@ -1,22 +1,30 @@
-from typing import Any
+from contextlib import asynccontextmanager
+from collections.abc import AsyncIterator
+from dataclasses import dataclass
+from typing import AsyncIterator
 from kubernetes import client, config
 import os 
-
-import httpx
 from mcp.server.fastmcp import FastMCP
 
-# Initialize FastMCP server
-mcp = FastMCP("kubectl")
+from generate import create_lister, list_k8s_function
 
-@mcp.tool("get_namespaces", "Get all namespaces in the Kubernetes cluster.")
-async def get_namespaces() -> list[str]:
-    """Get all namespaces in the Kubernetes cluster."""
+@dataclass
+class AppContext:
+    """
+    if something gets initialied in the app context you can add that here.
+    """
+    pass
 
+@asynccontextmanager
+async def app_lifespan(server: FastMCP) -> AsyncIterator[AppContext]:
+    """Manage application lifecycle with type-safe context"""
+    # Initialize on startup
     config.load_kube_config("~/.kube/config")
-    v1 = client.CoreV1Api()
-    namespaces = v1.list_namespace()
-    return [ns.metadata.name for ns in namespaces.items]
+    add_tools()
+    yield AppContext
 
+# Initialize FastMCP server
+mcp = FastMCP("kubectl", lifespan=app_lifespan)
 
 @mcp.tool("path_env", "Get the PATH environment variable.")
 async def get_path() -> str:
@@ -27,6 +35,17 @@ async def get_path() -> str:
     Alternatively when kubectl can not find the auth plugin."""
     return  os.environ.get("PATH", "")
 
-if __name__ == "__main__":
-    # Initialize and run the server
+
+def add_tools():
+    """Add tools to the FastMCP server."""
+    print("Adding tools")
+    names = list_k8s_function("^list_.*$(?<!http_info)")
+
+    for name in names:
+        method = create_lister(name)
+        mcp.add_tool(method, name=name, description=f"kubernetes {name}s")
+
+def main() -> None:
+    """Main function to initialize and run the MCP server."""
+    print("Starting FastMCP server")
     mcp.run(transport='stdio')
