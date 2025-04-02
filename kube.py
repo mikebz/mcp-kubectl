@@ -19,6 +19,7 @@ class AppContext:
 async def app_lifespan(server: FastMCP) -> AsyncIterator[AppContext]:
     """Manage application lifecycle with type-safe context"""
     # Initialize on startup
+    print("Loading kube config")
     config.load_kube_config("~/.kube/config")
     add_tools()
     yield AppContext
@@ -49,3 +50,7 @@ def main() -> None:
     """Main function to initialize and run the MCP server."""
     print("Starting FastMCP server")
     mcp.run(transport='stdio')
+
+if __name__ == "__main__":
+    print("Running kube.py as main")
+    main()
