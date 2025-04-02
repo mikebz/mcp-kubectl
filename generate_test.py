@@ -1,5 +1,6 @@
 import pytest
 from generate import list_k8s_function
+from generate import num_params
 
 def test_list():
     """Test the list_k8s_function function."""
@@ -24,3 +25,27 @@ def test_specific_function():
     assert isinstance(specific_function, list)
     assert len(specific_function) == 1
     assert specific_function[0] == "list_namespace"
+    
+    
+def test_num_params():
+    """Test the num_params function with different method signatures."""
+
+    def no_params():
+        pass
+    assert num_params(no_params) == 0
+
+    def one_required(x):
+        pass
+    assert num_params(one_required) == 1
+
+    def mixed_params(a, b, c=None, d=1):
+        pass
+    assert num_params(mixed_params) == 2
+
+    def kwargs_only(**kwargs):
+        pass
+    assert num_params(kwargs_only) == 0
+
+    def complex_signature(a, b, *args, c=None, **kwargs):
+        pass
+    assert num_params(complex_signature) == 2
