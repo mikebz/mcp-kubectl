@@ -2,7 +2,7 @@ import inspect
 import re
 from kubernetes import client
 
-def list_k8s_function(regex_pattern: str, max_params: int = None) -> list[str]:
+def list_k8s_function(regex_pattern: str, nparams: int = None) -> list[str]:
     """
     Lists all functions in client.CoreV1Api that match a given regex pattern.
 
@@ -13,8 +13,8 @@ def list_k8s_function(regex_pattern: str, max_params: int = None) -> list[str]:
         A list of function names that match the regex pattern.
     """
 
-    if max_params is None:
-        max_params  = 0
+    if nparams is None:
+        nparams  = 0
 
     api_class = client.CoreV1Api
     matching_functions: list[str] = []
@@ -22,7 +22,7 @@ def list_k8s_function(regex_pattern: str, max_params: int = None) -> list[str]:
         attr = getattr(api_class, name)
 
         if callable(attr) and re.match(regex_pattern, name):
-            if num_params(attr) <= max_params:
+            if num_params(attr) == nparams:
                 matching_functions.append(name)
     return matching_functions
 
