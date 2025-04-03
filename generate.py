@@ -60,11 +60,11 @@ def create_lister(name: str) -> callable:
     Returns:
         A function that lists the specified resource.
     """
-    async def lister() -> list[str]:
+    async def lister() -> dict:
         """List the specified Kubernetes resource."""
         v1 = client.CoreV1Api()
         method = getattr(v1, name)
-        items = method()
-        return [item.metadata.name for item in items.items]
+        r = method()
+        return r.to_dict()
 
     return lister
