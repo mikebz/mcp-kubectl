@@ -1,9 +1,14 @@
+"""
+FastMCP server for Kubernetes tools.
+Copyright (c) 2025, Google LLC.
+"""
+# -*- coding: utf-8 -*-
+
+import os
 from contextlib import asynccontextmanager
-from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from typing import AsyncIterator
-from kubernetes import client, config
-import os 
+from kubernetes import config
 from mcp.server.fastmcp import FastMCP
 
 from generate import create_lister, list_k8s_function
@@ -13,10 +18,9 @@ class AppContext:
     """
     if something gets initialied in the app context you can add that here.
     """
-    pass
 
 @asynccontextmanager
-async def app_lifespan(server: FastMCP) -> AsyncIterator[AppContext]:
+async def app_lifespan(_: FastMCP) -> AsyncIterator[AppContext]:
     """Manage application lifecycle with type-safe context"""
     # Initialize on startup
     print("Loading kube config")

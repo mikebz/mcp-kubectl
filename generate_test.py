@@ -1,4 +1,8 @@
-import pytest
+# -*- coding: utf-8 -*-
+"""
+Test module for the generate module.
+Copyright (c) 2025, Google LLC.
+"""
 from generate import list_k8s_function
 from generate import num_params
 
@@ -11,7 +15,7 @@ def test_list():
     for func_name in matching_functions:
         assert func_name.startswith("list_")
 
-def test_nonexistend():
+def test_nonexistent():
     """Test the list_k8s_function function with a non-existent pattern."""
     # Test with a pattern that should match no functions
     no_matching_functions = list_k8s_function(r"^nonexistent_.*")
@@ -25,27 +29,28 @@ def test_specific_function():
     assert isinstance(specific_function, list)
     assert len(specific_function) == 1
     assert specific_function[0] == "list_namespace"
-    
-    
+
+
 def test_num_params():
+    # pylint: disable=unused-argument
     """Test the num_params function with different method signatures."""
 
     def no_params():
-        pass
+        """Test function with no parameters."""
     assert num_params(no_params) == 0
 
     def one_required(x):
-        pass
+        """Test function with one required parameter."""
     assert num_params(one_required) == 1
 
     def mixed_params(a, b, c=None, d=1):
-        pass
+        """Test function with mixed parameters."""
     assert num_params(mixed_params) == 2
 
     def kwargs_only(**kwargs):
-        pass
+        """Test function with kwargs only."""
     assert num_params(kwargs_only) == 0
 
     def complex_signature(a, b, *args, c=None, **kwargs):
-        pass
+        """Test function with complex signature."""
     assert num_params(complex_signature) == 2

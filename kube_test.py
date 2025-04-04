@@ -1,4 +1,7 @@
-import asyncio
+"""
+Test the kube module.
+Copyright (c) 2025, Google LLC.
+"""
 import pytest
 from kubernetes import config
 from generate import create_lister
@@ -21,9 +24,13 @@ async def test_get_namespaces():
     assert isinstance(namespaces, list)
     assert len(namespaces) > 0
 
-def test_add_tools():
+@pytest.mark.asyncio
+async def test_add_tools():
     """Test adding MCP tools by calling add_tools() and then
     checking that those actually exist."""
     add_tools()
-    assert len(mcp._tool_manager._tools) > 0
-    assert "list_namespace" in mcp._tool_manager._tools
+
+    tools = await mcp.list_tools()
+    tools_length = len(tools)
+    assert tools_length > 0
+    assert "list_namespace" in tools
