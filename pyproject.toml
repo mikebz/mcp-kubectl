@@ -12,8 +12,19 @@ dependencies = [
     "pytest>=8.3.5",
     "pytest-asyncio>=0.25.3",
 ]
+
 [tool.pytest.ini_options]
 markers = [
     "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
 ]
 asyncio_default_fixture_loop_scope = "function"
+
+[tool.pylint]
+# Add directories/files to ignore (use TOML array of strings)
+# This will ignore the top-level .venv directory
+ignore = [".venv"]
+
+# You can add other pylint configurations here as well
+# For example:
+# disable = ["C0114", "C0116"] # Disable specific checks
+# max-line-length = 100
