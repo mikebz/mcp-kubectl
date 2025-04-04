@@ -9,9 +9,10 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import AsyncIterator
 from kubernetes import config
+from mcp.server.fastmcp.resources import Resource
 from mcp.server.fastmcp import FastMCP
 
-from generate import create_lister, list_k8s_function
+from generate import create_lister, create_patcher, create_namespaced_lister, list_k8s_function
 
 @dataclass
 class AppContext:
@@ -26,6 +27,7 @@ async def app_lifespan(_: FastMCP) -> AsyncIterator[AppContext]:
     print("Loading kube config")
     config.load_kube_config("~/.kube/config")
     add_tools()
+    add_resources()
     yield AppContext
 
 # Initialize FastMCP server
@@ -40,15 +42,44 @@ async def get_path() -> str:
     Alternatively when kubectl can not find the auth plugin."""
     return  os.environ.get("PATH", "")
 
+def add_resources():
+    """Add resources to the FastMCP server."""
+    print("Adding resources")
 
-def add_tools():
-    """Add tools to the FastMCP server."""
-    print("Adding tools")
+    # first we add all the resources that don't require
+    # any parameters
     names = list_k8s_function("^list_.*$(?<!http_info)")
 
     for name in names:
         method = create_lister(name)
-        mcp.add_tool(method, name=name, description=f"kubernetes {name}s")
+        resource = Resource(uri=f"file:///{name}.json",
+                            name=f"kubernetes {name}",
+                            description=f"kubernetes {name}s",
+                            mime_type="application/json",
+                            fn=method)
+        mcp.add_resource(resource)
+
+    # second we add all the resources that go into namespaces
+    names = list_k8s_function("^list_namespaced.*$(?<!http_info)", 1)
+
+    for name in names:
+        method = create_namespaced_lister(name)
+        resource = Resource(uri=f"file://{name}/{{namespace}}/.json",
+                            name=f"kubernetes {name}",
+                            description=f"kubernetes {name}s",
+                            mime_type="application/json",
+                            fn=method)
+        mcp.add_resource(resource)
+
+def add_tools():
+    """Add tools to the FastMCP server."""
+    print("Adding tools")
+    names = list_k8s_function("^patch_.*$(?<!http_info)", 3)
+
+    for name in names:
+        method = create_patcher(name)
+        mcp.add_tool(method, name=name, description=f"patch kubernetes {name}s")
+
 
 def main() -> None:
     """Main function to initialize and run the MCP server."""
