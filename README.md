@@ -12,7 +12,7 @@ NOTE: these are always expanding
 ## Prerequisites
 
 -   Python 3.11
--   uv https://docs.astral.sh/uv/ 
+-   uv https://docs.astral.sh/uv/
 
 ## Installation
 
@@ -62,7 +62,11 @@ NOTE: these are always expanding
     [tutorial for installing and using the inspector](https://modelcontextprotocol.io/docs/tools/inspector)
 
     ```bash
-    npx @modelcontextprotocol/inspector
+        npx @modelcontextprotocol/inspector \
+        uv \
+        --directory /Users/mikebz/src/mcp-kubectl \
+        run \
+        kube.py
     ```
 
 ## Development

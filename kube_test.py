@@ -7,8 +7,8 @@ import string
 import pytest
 from kubernetes import config
 from kubernetes import client
-from kube import add_tools, mcp
 import generate as g
+import kube as k
 
 
 def _kube_setup():
@@ -87,10 +87,26 @@ async def test_add_tools():
     checking that those actually exist."""
     _kube_setup()
 
-    add_tools()
+    k.add_tools()
 
-    tools = await mcp.list_tools()
+    tools = await k.mcp.list_tools()
     tools_length = len(tools)
     names = [tool.name for tool in tools]
     assert tools_length > 0
     assert "patch_namespaced_config_map" in names
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
+async def test_add_resources():
+    """Test adding MCP resources by calling add_resources() and then
+    checking that those actually exist."""
+    _kube_setup()
+
+    k.add_resources()
+
+    resources = await k.mcp.list_resources()
+    resources_length = len(resources)
+    names = [resource.name for resource in resources]
+    assert resources_length > 0
+    assert "kubernetes list_namespace" in names

@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import AsyncIterator
 from kubernetes import config
-from mcp.server.fastmcp.resources import Resource
+from mcp.server.fastmcp.resources import FunctionResource
 from mcp.server.fastmcp import FastMCP
 
 from generate import create_lister, create_patcher, create_namespaced_lister, list_k8s_function
@@ -52,7 +52,7 @@ def add_resources():
 
     for name in names:
         method = create_lister(name)
-        resource = Resource(uri=f"file:///{name}.json",
+        resource = FunctionResource(uri=f"file:///{name}.json",
                             name=f"kubernetes {name}",
                             description=f"kubernetes {name}s",
                             mime_type="application/json",
@@ -64,7 +64,7 @@ def add_resources():
 
     for name in names:
         method = create_namespaced_lister(name)
-        resource = Resource(uri=f"file://{name}/{{namespace}}/.json",
+        resource = FunctionResource(uri=f"file://{name}/{{namespace}}/.json",
                             name=f"kubernetes {name}",
                             description=f"kubernetes {name}s",
                             mime_type="application/json",
