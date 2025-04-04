@@ -22,4 +22,6 @@ jobs:
         run: uv sync
 
       - name: Analysing the code with pylint
-        run: pylint $(git ls-files '*.py')
+        run: |
+          source .venv/bin/activate
+          pylint $(git ls-files '*.py')
