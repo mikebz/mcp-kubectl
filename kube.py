@@ -46,30 +46,8 @@ def add_resources():
     """Add resources to the FastMCP server."""
     print("Adding resources")
 
-    # first we add all the resources that don't require
-    # any parameters
-    names = list_k8s_function("^list_.*$(?<!http_info)")
-
-    for name in names:
-        method = create_lister(name)
-        resource = FunctionResource(uri=f"file:///{name}.json",
-                            name=f"kubernetes {name}",
-                            description=f"kubernetes {name}s",
-                            mime_type="application/json",
-                            fn=method)
-        mcp.add_resource(resource)
-
-    # second we add all the resources that go into namespaces
-    names = list_k8s_function("^list_namespaced.*$(?<!http_info)", 1)
-
-    for name in names:
-        method = create_namespaced_lister(name)
-        resource = FunctionResource(uri=f"file://{name}/{{namespace}}/.json",
-                            name=f"kubernetes {name}",
-                            description=f"kubernetes {name}s",
-                            mime_type="application/json",
-                            fn=method)
-        mcp.add_resource(resource)
+    # it looks like added tools have limited support in Claud Desktop
+    # as well as
 
 def add_tools():
     """Add tools to the FastMCP server."""
@@ -80,6 +58,18 @@ def add_tools():
         method = create_patcher(name)
         mcp.add_tool(method, name=name, description=f"patch kubernetes {name}s")
 
+    names = list_k8s_function("^list_.*$(?<!http_info)")
+
+    for name in names:
+        method = create_lister(name)
+        mcp.add_tool(method, name=name, description=f"list kubernetes {name}s")
+
+    # second we add all the resources that go into namespaces
+    names = list_k8s_function("^list_namespaced.*$(?<!http_info)", 1)
+
+    for name in names:
+        method = create_namespaced_lister(name)
+        mcp.add_tool(method, name=name, description=f"list kubernetes {name}s in namespace")
 
 def main() -> None:
     """Main function to initialize and run the MCP server."""
