@@ -1,18 +1,17 @@
 # mcp-kubectl
-
-This project provides a set of tools for interacting with Kubernetes clusters, exposed as a service via the MCP (Microservice Control Plane) framework.
+A simple implementation of the Model Context Protocol for kubectl operations in Kubernetes environments. This tool allows AI assistants like Claude to interact directly with your Kubernetes clusters to perform operations and gather information.
 
 ## Features
 
-NOTE: these are always expanding
-
--   **Get Namespaces:** Retrieve a list of all namespaces in the connected Kubernetes cluster.
--   **Get PATH:** Retrieve the current system's PATH environment variable, useful for debugging `kubectl` configuration and authentication issues.
+- Execute kubernetes commands directly through an AI assistant
+- Get information about pods, services, deployments and other Kubernetes resources
+- Update resources using natural language instructions
 
 ## Prerequisites
 
 -   Python 3.11
 -   uv https://docs.astral.sh/uv/
+-   authentication to your cluster (I only tested with gcloud and kubectl)
 
 ## Installation
 
