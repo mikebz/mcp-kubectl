@@ -67,7 +67,7 @@ async def test_create_patcher():
     """Test the create_patcher function."""
     _kube_setup()
 
-    patcher = g.create_patcher("patch_namespaced_config_map")
+    patcher = g.create_namespaced_patcher("patch_namespaced_config_map")
 
     # Generate a random string for testing
     random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
@@ -94,6 +94,9 @@ async def test_add_tools():
     names = [tool.name for tool in tools]
     assert tools_length > 0
     assert "patch_namespaced_config_map" in names
+    assert "list_namespace" in names
+    assert "list_namespaced_config_map" in names
+    assert "read_namespaced_config_map" in names
 
 
 @pytest.mark.skip("the tools are not working in clients")

@@ -91,27 +91,27 @@ def create_namespaced_lister(method_name: str) -> Callable[[str], list[str]]:
 
     return namespaced_lister
 
-
-def create_reader(method_name: str) -> Callable[[str, str], dict]:
+def create_patcher(method_name: str) -> Callable:
     """
-    Create a getter function for a specific Kubernetes resource.
+    Create a patcher function for a specific Kubernetes resource.
 
     Args:
         name: The method name to call on the CoreV1Api client.
 
     Returns:
-        An async function that gets the specified resource.
+        An async function that patches the specified resource.
     """
-    async def reader(name: str, namespace: str) -> dict:
-        """Get the specified Kubernetes resource."""
+    async def patcher(name: str, body: dict) -> dict:
+        """Patch the specified Kubernetes resource."""
         v1 = client.CoreV1Api()
         method = getattr(v1, method_name)
-        obj = method(name,namespace)
+        obj = method(name, body)
         return obj.to_dict()
 
-    return reader
+    return patcher
 
-def create_patcher(method_name: str) -> Callable:
+
+def create_namespaced_patcher(method_name: str) -> Callable:
     """
     Create a patcher function for a specific Kubernetes resource.
 
@@ -129,3 +129,42 @@ def create_patcher(method_name: str) -> Callable:
         return obj.to_dict()
 
     return patcher
+
+def create_reader(method_name: str) -> Callable[[str, str], dict]:
+    """
+    Create a reader function for a specific Kubernetes resource.
+
+    Args:
+        name: The method name to call on the CoreV1Api client.
+
+    Returns:
+        An async function that gets the specified resource.
+    """
+    async def reader(name: str) -> dict:
+        """Get the specified Kubernetes resource."""
+        v1 = client.CoreV1Api()
+        method = getattr(v1, method_name)
+        obj = method(name)
+        return obj.to_dict()
+
+    return reader
+
+
+def create_namespaced_reader(method_name: str) -> Callable[[str, str], dict]:
+    """
+    Create a reader function for a specific Kubernetes resource.
+
+    Args:
+        name: The method name to call on the CoreV1Api client.
+
+    Returns:
+        An async function that gets the specified resource.
+    """
+    async def reader(name: str, namespace: str) -> dict:
+        """Get the specified Kubernetes resource."""
+        v1 = client.CoreV1Api()
+        method = getattr(v1, method_name)
+        obj = method(name,namespace)
+        return obj.to_dict()
+
+    return reader

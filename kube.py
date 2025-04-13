@@ -12,7 +12,8 @@ from kubernetes import config
 from mcp.server.fastmcp.resources import FunctionResource
 from mcp.server.fastmcp import FastMCP
 
-from generate import create_lister, create_patcher, create_namespaced_lister, list_k8s_function
+import generate as g
+
 
 @dataclass
 class AppContext:
@@ -52,24 +53,48 @@ def add_resources():
 def add_tools():
     """Add tools to the FastMCP server."""
     print("Adding tools")
-    names = list_k8s_function("^patch_.*$(?<!http_info)", 3)
 
+
+    # listers with namespace and without.
+    names = g.list_k8s_function("^list_.*$(?<!http_info)")
+    print("listers without namespace" + str(names))
     for name in names:
-        method = create_patcher(name)
-        mcp.add_tool(method, name=name, description=f"patch kubernetes {name}s")
-
-    names = list_k8s_function("^list_.*$(?<!http_info)")
-
-    for name in names:
-        method = create_lister(name)
+        method = g.create_lister(name)
         mcp.add_tool(method, name=name, description=f"list kubernetes {name}s")
 
-    # second we add all the resources that go into namespaces
-    names = list_k8s_function("^list_namespaced.*$(?<!http_info)", 1)
-
+    names = g.list_k8s_function("^list_namespaced.*$(?<!http_info)", 1)
+    print("listers with namespace" + str(names))
     for name in names:
-        method = create_namespaced_lister(name)
+        method = g.create_namespaced_lister(name)
         mcp.add_tool(method, name=name, description=f"list kubernetes {name}s in namespace")
+
+
+    # readers with namespace and without.
+    names = g.list_k8s_function("^read_.*$(?<!http_info)", 1)
+    print("readers without namespace" + str(names))
+    for name in names:
+        method = g.create_reader(name)
+        mcp.add_tool(method, name=name, description=f"read kubernetes {name}s")
+
+    names = g.list_k8s_function("^read_namespaced.*$(?<!http_info)", 2)
+    print("readers with namespace" + str(names))
+    for name in names:
+        method = g.create_namespaced_reader(name)
+        mcp.add_tool(method, name=name, description=f"read kubernetes {name}s in namespace")
+
+    # patchers with namespace and without.
+    names = g.list_k8s_function("^patch_.*$(?<!http_info)", 2)
+    print("patchers without namespace" + str(names))
+    for name in names:
+        method = g.create_patcher(name)
+        mcp.add_tool(method, name=name, description=f"patch kubernetes {name}s")
+
+    names = g.list_k8s_function("^patch_.*$(?<!http_info)", 3)
+    print("patchers with namespace" + str(names))
+    for name in names:
+        method = g.create_namespaced_patcher(name)
+        mcp.add_tool(method, name=name, description=f"patch kubernetes {name}s")
+
 
 def main() -> None:
     """Main function to initialize and run the MCP server."""
