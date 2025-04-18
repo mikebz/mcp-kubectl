@@ -52,7 +52,7 @@ def num_params(method: Callable[..., Any]) -> int:
         and param.kind in (param.POSITIONAL_OR_KEYWORD, param.POSITIONAL_ONLY)
     )
 
-def create_lister(method_name: str) -> Callable[[], list[str]]:
+def lister_tool(method_name: str) -> Callable[[], list[str]]:
     """
     Create a lister function for a specific Kubernetes resource.
 
@@ -72,7 +72,7 @@ def create_lister(method_name: str) -> Callable[[], list[str]]:
     return lister
 
 
-def create_namespaced_lister(method_name: str) -> Callable[[str], list[str]]:
+def namespaced_lister_tool(method_name: str) -> Callable[[str], list[str]]:
     """
     Create a namespaced lister function for a specific Kubernetes resource.
 
@@ -91,7 +91,7 @@ def create_namespaced_lister(method_name: str) -> Callable[[str], list[str]]:
 
     return namespaced_lister
 
-def create_patcher(method_name: str) -> Callable:
+def patcher_tool(method_name: str) -> Callable:
     """
     Create a patcher function for a specific Kubernetes resource.
 
@@ -111,7 +111,7 @@ def create_patcher(method_name: str) -> Callable:
     return patcher
 
 
-def create_namespaced_patcher(method_name: str) -> Callable:
+def namespaced_patcher_tool(method_name: str) -> Callable:
     """
     Create a patcher function for a specific Kubernetes resource.
 
@@ -130,7 +130,7 @@ def create_namespaced_patcher(method_name: str) -> Callable:
 
     return patcher
 
-def create_reader(method_name: str) -> Callable[[str, str], dict]:
+def reader_tool(method_name: str) -> Callable[[str, str], dict]:
     """
     Create a reader function for a specific Kubernetes resource.
 
@@ -150,7 +150,7 @@ def create_reader(method_name: str) -> Callable[[str, str], dict]:
     return reader
 
 
-def create_namespaced_reader(method_name: str) -> Callable[[str, str], dict]:
+def namespaced_reader_tool(method_name: str) -> Callable[[str, str], dict]:
     """
     Create a reader function for a specific Kubernetes resource.
 

@@ -33,7 +33,7 @@ async def test_get_namespaces():
     """Test the get_namespaces function."""
     _kube_setup()
 
-    method = g.create_lister( "list_namespace")
+    method = g.lister_tool( "list_namespace")
     # Ensure the function is callable
     assert callable(method), "The method should be callable"
     # Call the method to ensure it works correctly
@@ -51,7 +51,7 @@ async def test_create_namespaced_lister():
     """Test the create_namespaced_lister function."""
     _kube_setup()
 
-    method = g.create_namespaced_lister("list_namespaced_config_map")
+    method = g.namespaced_lister_tool("list_namespaced_config_map")
     # Ensure the function is callable
     assert callable(method), "The method should be callable"
     # Call the method with default namespace
@@ -67,7 +67,7 @@ async def test_create_patcher():
     """Test the create_patcher function."""
     _kube_setup()
 
-    patcher = g.create_namespaced_patcher("patch_namespaced_config_map")
+    patcher = g.namespaced_patcher_tool("patch_namespaced_config_map")
 
     # Generate a random string for testing
     random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))

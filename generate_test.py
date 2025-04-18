@@ -57,41 +57,41 @@ def test_num_params():
 
 def test_create_lister():
     """Test the create_lister function."""
-    lister = g.create_lister("list_namespace")
+    lister = g.lister_tool("list_namespace")
     assert callable(lister)
     assert inspect.iscoroutinefunction(lister)
 
 
 def test_create_namespaced_lister():
     """Test the create_namespaced_lister function."""
-    namespaced_lister = g.create_namespaced_lister("list_namespaced_pod")
+    namespaced_lister = g.namespaced_lister_tool("list_namespaced_pod")
     assert callable(namespaced_lister)
     assert inspect.iscoroutinefunction(namespaced_lister)
 
 
 def test_create_patcher():
     """Test the create_patcher function."""
-    patcher = g.create_patcher("patch_namespace")
+    patcher = g.patcher_tool("patch_namespace")
     assert callable(patcher)
     assert inspect.iscoroutinefunction(patcher)
 
 
 def test_create_namespaced_patcher():
     """Test the create_namespaced_patcher function."""
-    namespaced_patcher = g.create_namespaced_patcher("patch_namespaced_pod")
+    namespaced_patcher = g.namespaced_patcher_tool("patch_namespaced_pod")
     assert callable(namespaced_patcher)
     assert inspect.iscoroutinefunction(namespaced_patcher)
 
 
 def test_create_reader():
     """Test the create_reader function."""
-    reader = g.create_reader("read_namespace")
+    reader = g.reader_tool("read_namespace")
     assert callable(reader)
     assert inspect.iscoroutinefunction(reader)
 
 
 def test_create_namespaced_reader():
     """Test the create_namespaced_reader function."""
-    namespaced_reader = g.create_namespaced_reader("read_namespaced_pod")
+    namespaced_reader = g.namespaced_reader_tool("read_namespaced_pod")
     assert callable(namespaced_reader)
     assert inspect.iscoroutinefunction(namespaced_reader)

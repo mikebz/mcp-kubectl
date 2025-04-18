@@ -59,13 +59,13 @@ def add_tools():
     names = g.list_k8s_function("^list_.*$(?<!http_info)")
     print("listers without namespace" + str(names))
     for name in names:
-        method = g.create_lister(name)
+        method = g.lister_tool(name)
         mcp.add_tool(method, name=name, description=f"list kubernetes {name}s")
 
     names = g.list_k8s_function("^list_namespaced.*$(?<!http_info)", 1)
     print("listers with namespace" + str(names))
     for name in names:
-        method = g.create_namespaced_lister(name)
+        method = g.namespaced_lister_tool(name)
         mcp.add_tool(method, name=name, description=f"list kubernetes {name}s in namespace")
 
 
@@ -73,26 +73,26 @@ def add_tools():
     names = g.list_k8s_function("^read_.*$(?<!http_info)", 1)
     print("readers without namespace" + str(names))
     for name in names:
-        method = g.create_reader(name)
+        method = g.reader_tool(name)
         mcp.add_tool(method, name=name, description=f"read kubernetes {name}s")
 
     names = g.list_k8s_function("^read_namespaced.*$(?<!http_info)", 2)
     print("readers with namespace" + str(names))
     for name in names:
-        method = g.create_namespaced_reader(name)
+        method = g.namespaced_reader_tool(name)
         mcp.add_tool(method, name=name, description=f"read kubernetes {name}s in namespace")
 
     # patchers with namespace and without.
     names = g.list_k8s_function("^patch_.*$(?<!http_info)", 2)
     print("patchers without namespace" + str(names))
     for name in names:
-        method = g.create_patcher(name)
+        method = g.patcher_tool(name)
         mcp.add_tool(method, name=name, description=f"patch kubernetes {name}s")
 
     names = g.list_k8s_function("^patch_.*$(?<!http_info)", 3)
     print("patchers with namespace" + str(names))
     for name in names:
-        method = g.create_namespaced_patcher(name)
+        method = g.namespaced_patcher_tool(name)
         mcp.add_tool(method, name=name, description=f"patch kubernetes {name}s")
 
 
