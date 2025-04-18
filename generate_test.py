@@ -6,8 +6,8 @@ Copyright (c) 2025, Google LLC.
 import inspect
 import generate as g
 
-def test_list():
-    """Test the list_k8s_function function."""
+def test_list_k8s_function_match():
+    """Test the list_k8s_function function with a pattern that matches."""
     # Test with a pattern that should match some functions
     matching_functions = g.list_k8s_function(r"^list_.*")
     assert isinstance(matching_functions, list)
@@ -15,14 +15,14 @@ def test_list():
     for func_name in matching_functions:
         assert func_name.startswith("list_")
 
-def test_nonexistent():
+def test_list_k8s_function_no_match():
     """Test the list_k8s_function function with a non-existent pattern."""
     # Test with a pattern that should match no functions
     no_matching_functions = g.list_k8s_function(r"^nonexistent_.*")
     assert isinstance(no_matching_functions, list)
     assert len(no_matching_functions) == 0
 
-def test_specific_function():
+def test_list_k8s_function_specific():
     """Test the list_k8s_function function with a specific function name."""
     # Test with a pattern that should match a specific function
     specific_function = g.list_k8s_function(r"^list_namespace$")
@@ -55,43 +55,67 @@ def test_num_params():
         """Test function with complex signature."""
     assert g.num_params(complex_signature) == 2
 
-def test_create_lister():
-    """Test the create_lister function."""
+def test_lister_tool():
+    """Test the lister_tool function."""
     lister = g.lister_tool("list_namespace")
     assert callable(lister)
     assert inspect.iscoroutinefunction(lister)
 
 
-def test_create_namespaced_lister():
-    """Test the create_namespaced_lister function."""
+def test_namespaced_lister_tool():
+    """Test the namespaced_lister_tool function."""
     namespaced_lister = g.namespaced_lister_tool("list_namespaced_pod")
     assert callable(namespaced_lister)
     assert inspect.iscoroutinefunction(namespaced_lister)
 
 
-def test_create_patcher():
-    """Test the create_patcher function."""
+def test_patcher_tool():
+    """Test the patcher_tool function."""
     patcher = g.patcher_tool("patch_namespace")
     assert callable(patcher)
     assert inspect.iscoroutinefunction(patcher)
 
 
-def test_create_namespaced_patcher():
-    """Test the create_namespaced_patcher function."""
+def test_namespaced_patcher_tool():
+    """Test the namespaced_patcher_tool function."""
     namespaced_patcher = g.namespaced_patcher_tool("patch_namespaced_pod")
     assert callable(namespaced_patcher)
     assert inspect.iscoroutinefunction(namespaced_patcher)
 
 
-def test_create_reader():
-    """Test the create_reader function."""
+def test_reader_tool():
+    """Test the reader_tool function."""
     reader = g.reader_tool("read_namespace")
     assert callable(reader)
     assert inspect.iscoroutinefunction(reader)
 
 
-def test_create_namespaced_reader():
-    """Test the create_namespaced_reader function."""
+def test_namespaced_reader_tool():
+    """Test the namespaced_reader_tool function."""
     namespaced_reader = g.namespaced_reader_tool("read_namespaced_pod")
     assert callable(namespaced_reader)
     assert inspect.iscoroutinefunction(namespaced_reader)
+
+def test_creator_tool_non_namespaced():
+    """Test the creator_tool function for non-namespaced resources."""
+    tool = g.creator_tool("list_namespace")
+    assert callable(tool)
+    assert inspect.iscoroutinefunction(tool)
+
+def test_creator_tool_namespaced():
+    """Test the creator_tool function for namespaced resources."""
+    namespaced_tool = g.creator_tool("list_namespaced_pod")
+    assert callable(namespaced_tool)
+    assert inspect.iscoroutinefunction(namespaced_tool)
+
+def test_deleter_tool():
+    """Test the deleter_tool function for non-namespaced resources."""
+    tool = g.deleter_tool("list_namespace")
+    assert callable(tool)
+    assert inspect.iscoroutinefunction(tool)
+
+def test_deleter_tool_namespaced():
+    """Test the deleter_tool function for namespaced resources."""
+    namespaced_tool = g.deleter_tool("list_namespaced_pod")
+    assert callable(namespaced_tool)
+    assert inspect.iscoroutinefunction(namespaced_tool)

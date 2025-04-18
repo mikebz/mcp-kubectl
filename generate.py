@@ -168,3 +168,73 @@ def namespaced_reader_tool(method_name: str) -> Callable[[str, str], dict]:
         return obj.to_dict()
 
     return reader
+
+def creator_tool(method_name: str) -> Callable[[str, str], dict]:
+    """
+    Create a creator function for a specific Kubernetes resource.
+
+    Args:
+        name: The method name to call on the CoreV1Api client.
+
+    Returns:
+        An async function that creates the specified resource.
+    """
+    async def creator(name: str, body: dict) -> dict:
+        """Create the specified Kubernetes resource."""
+        v1 = client.CoreV1Api()
+        method = getattr(v1, method_name)
+        obj = method(name, body)
+        return obj.to_dict()
+
+    return creator
+
+def namespaced_creator_tool(method_name: str) -> Callable[[str, str], dict]:
+    """
+    Create a creator function for a specific Kubernetes resource.
+    Args:
+        name: The method name to call on the CoreV1Api client.
+    Returns:
+        An async function that creates the specified resource.
+    """
+    async def creator(name: str, namespace: str, body: dict) -> dict:
+        """Create the specified Kubernetes resource."""
+        v1 = client.CoreV1Api()
+        method = getattr(v1, method_name)
+        obj = method(name, namespace, body)
+        return obj.to_dict()
+
+    return creator
+
+def deleter_tool(method_name: str) -> Callable[[str], dict]:
+    """
+    Create a deleter function for a specific Kubernetes resource.
+    Args:
+        name: The method name to call on the CoreV1Api client.
+    Returns:
+        An async function that deletes the specified resource.
+    """
+    async def deleter(name: str) -> dict:
+        """Delete the specified Kubernetes resource."""
+        v1 = client.CoreV1Api()
+        method = getattr(v1, method_name)
+        obj = method(name)
+        return obj.to_dict()
+
+    return deleter
+
+def namespaced_deleter_tool(method_name: str) -> Callable[[str], dict]:
+    """
+    Create a deleter function for a specific Kubernetes resource.
+    Args:
+        name: The method name to call on the CoreV1Api client.
+    Returns:
+        An async function that deletes the specified resource.
+    """
+    async def deleter(name: str, namespace: str) -> dict:
+        """Delete the specified Kubernetes resource."""
+        v1 = client.CoreV1Api()
+        method = getattr(v1, method_name)
+        obj = method(name, namespace)
+        return obj.to_dict()
+
+    return deleter
