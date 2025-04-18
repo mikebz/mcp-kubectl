@@ -9,7 +9,6 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import AsyncIterator
 from kubernetes import config
-from mcp.server.fastmcp.resources import FunctionResource
 from mcp.server.fastmcp import FastMCP
 
 import generate as g
@@ -95,6 +94,29 @@ def add_tools():
         method = g.namespaced_patcher_tool(name)
         mcp.add_tool(method, name=name, description=f"patch kubernetes {name}s")
 
+    names = g.list_k8s_function("^delete_.*$(?<!http_info)", 1)
+    print("deletes without namespace" + str(names))
+    for name in names:
+        method = g.deleter_tool(name)
+        mcp.add_tool(method, name=name, description=f"delete kubernetes {name}s")
+
+    names = g.list_k8s_function("^delete_namespaced.*$(?<!http_info)", 2)
+    print("deletes with namespace" + str(names))
+    for name in names:
+        method = g.namespaced_deleter_tool(name)
+        mcp.add_tool(method, name=name, description=f"delete kubernetes {name}s")
+
+    names = g.list_k8s_function("^create_.*$(?<!http_info)", 1)
+    print("creators without namespace" + str(names))
+    for name in names:
+        method = g.creator_tool(name)
+        mcp.add_tool(method, name=name, description=f"create kubernetes {name}s")
+
+    names = g.list_k8s_function("^create_namespaced.*$(?<!http_info)", 2)
+    print("creators with namespace" + str(names))
+    for name in names:
+        method = g.namespaced_creator_tool(name)
+        mcp.add_tool(method, name=name, description=f"create kubernetes {name}s in namespace")
 
 def main() -> None:
     """Main function to initialize and run the MCP server."""
