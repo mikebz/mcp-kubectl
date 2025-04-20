@@ -17,24 +17,24 @@ A simple implementation of the Model Context Protocol for kubectl operations in 
 
 1.  Clone the repository:
 
-    ```bash
-    git clone <repository_url>
-    cd mcp-kubectl
-    ```
+```bash
+git clone <repository_url>
+cd mcp-kubectl
+```
 
 2.  Install the required Python packages:
 
-    ```bash
-    uv run kube.py
-    ```
+```bash
+uv run kube.py
+```
 
 ## Usage
 
 1.  Update the MCP config for Caude desktop
 
-    Create/edit `~/Library/Application\ Support/Claude/claude_desktop_config.json`
+Create/edit `~/Library/Application\ Support/Claude/claude_desktop_config.json`
 
-    Example file:
+Example file:
 
 ```
 {
@@ -54,25 +54,45 @@ A simple implementation of the Model Context Protocol for kubectl operations in 
     }
 }
 ```
-    After that you can use Claud Desktop https://claude.ai/download to use the tool
+After that you can use Claud Desktop https://claude.ai/download to use the tool
 
 2.  Interact with the server using the MCP inspector.
 
-    [tutorial for installing and using the inspector](https://modelcontextprotocol.io/docs/tools/inspector)
+[tutorial for installing and using the inspector](https://modelcontextprotocol.io/docs/tools/inspector)
 
-    ```bash
-        npx @modelcontextprotocol/inspector \
-        uv \
-        --directory /Users/mikebz/src/mcp-kubectl \
-        run \
-        kube.py
-    ```
+```bash
+    npx @modelcontextprotocol/inspector \
+    uv \
+    --directory /Users/mikebz/src/mcp-kubectl \
+    run \
+    kube.py
+```
 
 ## Development
 
 -   The main logic is in `kube.py`.
 -   The MCP server is initialized and run at the end of `kube.py`.
 -   New tools can be added by creating new functions and decorating them with `@mcp.tool`.
+
+
+### Testing
+
+Testing is done using pytest
+
+```bash
+uv run pytest
+```
+
+### Linting
+
+Linting is done using pylint
+
+```
+uv run pylint $(git ls-files '*.py')
+```
+
+You might also find https://code.visualstudio.com/docs/python/linting useful
+
 
 ## Contributing
 
