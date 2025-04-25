@@ -77,7 +77,7 @@ def namespaced_lister_tool(method_name: str) -> Callable[[str], list[str]]:
     Create a namespaced lister function for a specific Kubernetes resource.
 
     Args:
-        name: The method name to call on the CoreV1Api client.
+        method_name: The method name to call on the CoreV1Api client.
 
     Returns:
         An async function that lists the specified resource in a namespace.
@@ -96,7 +96,7 @@ def patcher_tool(method_name: str) -> Callable:
     Create a patcher function for a specific Kubernetes resource.
 
     Args:
-        name: The method name to call on the CoreV1Api client.
+        method_name: The method name to call on the CoreV1Api client.
 
     Returns:
         An async function that patches the specified resource.
@@ -116,7 +116,7 @@ def namespaced_patcher_tool(method_name: str) -> Callable:
     Create a patcher function for a specific Kubernetes resource.
 
     Args:
-        name: The method name to call on the CoreV1Api client.
+        method_name: The method name to call on the CoreV1Api client.
 
     Returns:
         An async function that patches the specified resource.
@@ -135,7 +135,7 @@ def reader_tool(method_name: str) -> Callable[[str, str], dict]:
     Create a reader function for a specific Kubernetes resource.
 
     Args:
-        name: The method name to call on the CoreV1Api client.
+        method_name: The method name to call on the CoreV1Api client.
 
     Returns:
         An async function that gets the specified resource.
@@ -155,7 +155,7 @@ def namespaced_reader_tool(method_name: str) -> Callable[[str, str], dict]:
     Create a reader function for a specific Kubernetes resource.
 
     Args:
-        name: The method name to call on the CoreV1Api client.
+        method_name: The method name to call on the CoreV1Api client.
 
     Returns:
         An async function that gets the specified resource.
@@ -174,7 +174,7 @@ def creator_tool(method_name: str) -> Callable[[str, str], dict]:
     Create a creator function for a specific Kubernetes resource.
 
     Args:
-        name: The method name to call on the CoreV1Api client.
+        method_name: The method name to call on the CoreV1Api client.
 
     Returns:
         An async function that creates the specified resource.
@@ -192,7 +192,7 @@ def namespaced_creator_tool(method_name: str) -> Callable[[str, str], dict]:
     """
     Create a creator function for a specific Kubernetes resource.
     Args:
-        name: The method name to call on the CoreV1Api client.
+        method_name: The method name to call on the CoreV1Api client.
     Returns:
         An async function that creates the specified resource.
     """
@@ -209,7 +209,7 @@ def deleter_tool(method_name: str) -> Callable[[str], dict]:
     """
     Create a deleter function for a specific Kubernetes resource.
     Args:
-        name: The method name to call on the CoreV1Api client.
+        method_name: The method name to call on the CoreV1Api client.
     Returns:
         An async function that deletes the specified resource.
     """
@@ -226,7 +226,7 @@ def namespaced_deleter_tool(method_name: str) -> Callable[[str], dict]:
     """
     Create a deleter function for a specific Kubernetes resource.
     Args:
-        name: The method name to call on the CoreV1Api client.
+        method_name: The method name to call on the CoreV1Api client.
     Returns:
         An async function that deletes the specified resource.
     """
