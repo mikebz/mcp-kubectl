@@ -5,10 +5,10 @@ Copyright (c) 2025, Google LLC.
 # -*- coding: utf-8 -*-
 
 import os
-import yaml
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import AsyncIterator
+import yaml
 from kubernetes import config, client, utils
 from mcp.server.fastmcp import FastMCP
 
