@@ -2,6 +2,7 @@
 Test the kube module.
 Copyright (c) 2025, Google LLC.
 """
+import os
 import random
 import string
 import pytest
@@ -17,11 +18,34 @@ def _kube_setup():
     v1  = client.CoreV1Api()
 
     try:
+        # NOTE: if you are creating test objects
+        # that are not config maps or services
+        # in the default namespace, you will need to
+        # change this clean up code.
+        v1.delete_collection_namespaced_config_map(
+            namespace="default",
+            label_selector="env=test",
+            body=client.V1DeleteOptions(
+                propagation_policy="Foreground",
+                grace_period_seconds=5,
+            ),
+        )
+
+        v1.delete_collection_namespaced_service(
+            namespace="default",
+            label_selector="env=test",
+            body=client.V1DeleteOptions(
+                propagation_policy="Foreground",
+                grace_period_seconds=5,
+            ),
+        )
+
         v1.create_namespaced_config_map(
             namespace="default",
             body={"apiVersion": "v1",
                 "kind": "ConfigMap",
-                "metadata": {"name": "test-configmap"}},
+                "metadata": {"name": "test-configmap",
+                             "labels": {"env": "test"}}},
         )
     except client.exceptions.ApiException as e:
         if e.status != 409:
@@ -98,6 +122,35 @@ async def test_add_tools():
     assert "list_namespaced_config_map" in names
     assert "read_namespaced_config_map" in names
 
+@pytest.mark.integration
+@pytest.mark.asyncio
+async def test_create_from_yaml():
+    """Test the create_from_yaml function."""
+    _kube_setup()
+
+    # Get the directory containing the test file
+    test_dir = os.path.dirname(__file__)
+    # Construct the full path to the YAML file
+    yaml_path = os.path.join(test_dir, "test_data", "two_resources.yaml")
+
+    # Load the YAML content from the file
+    with open(yaml_path, 'r', encoding='utf-8') as f:
+        # Use safe_load for single YAML document or safe_load_all for multiple
+        yaml_data = f.read()
+
+    # Call the create_from_yaml function
+    result = await k.create_from_yaml("default", yaml_data)
+
+    # Check that the result is a dictionary
+    assert isinstance(result, list)
+    # Check that the result contains the expected keys
+    assert len(result) == 2
+    obj1 = result[0]
+    assert "api_version" in obj1
+    assert "kind" in obj1
+    assert "metadata" in obj1
+    assert "name" in obj1["metadata"]
+    assert obj1["metadata"]["name"] == "t2"
 
 @pytest.mark.skip("the tools are not working in clients")
 async def test_add_resources():

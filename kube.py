@@ -5,10 +5,11 @@ Copyright (c) 2025, Google LLC.
 # -*- coding: utf-8 -*-
 
 import os
+import yaml
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import AsyncIterator
-from kubernetes import config
+from kubernetes import config, client, utils
 from mcp.server.fastmcp import FastMCP
 
 import generate as g
@@ -41,6 +42,36 @@ async def get_path() -> str:
     when you have kubectl installed in a different path than the one set in your PATH.
     Alternatively when kubectl can not find the auth plugin."""
     return  os.environ.get("PATH", "")
+
+
+@mcp.tool("create_from_yaml", "Create a Kubernetes resource from a YAML string.")
+async def create_from_yaml(namespace: str, yaml_data: str) -> list[dict]:
+    """
+    Create a Kubernetes resource from a YAML string.
+    Args:
+        namespace: The namespace to create the resource in.
+        yaml_data: The YAML string to create the resource from.
+    Returns:
+        The created resource as a dictionary.
+    Raises:
+        kubernetes.client.exceptions.ApiException: If the Kubernetes API call fails.
+        yaml.YAMLError: If the provided YAML string is invalid.
+    """
+    print("Creating from yaml")
+
+    objs = list(yaml.safe_load_all(yaml_data))
+
+    k8s_client = client.ApiClient()
+    objects = utils.create_from_yaml(k8s_client, None, objs, False, namespace)
+
+    # This is a workaround for the fact that create_from_yaml returns a list of lists
+    # instead of a single list.
+    result = []
+    for obj_list in objects:
+        for obj in obj_list:
+            result.append(obj.to_dict())
+
+    return result
 
 def add_resources():
     """Add resources to the FastMCP server."""
